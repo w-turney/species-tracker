@@ -8,7 +8,7 @@ A full‑stack web application for exploring species conservation status, distri
 
 ## Links / screenshots
 
-- Repository: [GitHub repo link]
+- Repository: [GitHub repo](https://github.com/w-turney/species-tracker)
 
 ### Search page
 ![Search page](./screenshots/search-page.png)
