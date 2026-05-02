@@ -1,0 +1,14 @@
+.sticky-navbar {
+    z-index: 1000;
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.sticky-navbar .navbar-nav {
+    gap: 0.5rem;
+    scrollbar-width: thin;
+}
+
+.sticky-navbar .nav-link {
+    padding: 1rem;
+}

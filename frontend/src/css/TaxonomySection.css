@@ -1,0 +1,13 @@
+.tax-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 0.5rem;
+    word-break: break-word;
+    padding: 0.5rem;
+    background-color: #f9f9f9;
+    border-radius: 0.5rem;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

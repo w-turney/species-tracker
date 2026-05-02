@@ -1,0 +1,10 @@
+.result-link {
+    text-decoration: none;
+}
+
+.result-card {
+    border: solid black 2px;
+    margin: 20px 0;
+    padding: 20px;
+    max-width: 600px;
+}
