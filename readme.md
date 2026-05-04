@@ -138,7 +138,7 @@ React frontend → Express API → External APIs → PostGIS range database → 
 
 ### Prerequisites
 
-- Node.js (LTS recommended)  
+- Node.js 
 - PostgreSQL with PostGIS extension  
 - MongoDB
 - IUCN API token  
