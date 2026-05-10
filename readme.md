@@ -98,12 +98,6 @@ The backend prepares and formats this data before returning it to the frontend
 
 ---
 
-## Architecture
-
-React frontend → Express API → External APIs → PostGIS range database → MongoDB cache → React frontend
-
----
-
 ## API routes
 
 - `GET /api/search` — search for species by common name
