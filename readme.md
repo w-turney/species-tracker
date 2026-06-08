@@ -157,8 +157,8 @@ MONGO_URI=mongodb+srv://<USERNAME>:<PASSWORD>@<CLUSTER>.mongodb.net/species-trac
 ### Clone the repository
 
 ```bash
-git clone https://github.com/yourname/MyProject.git
-cd MyProject
+git clone https://github.com/w-turney/species-tracker
+cd species-tracker
 ```
 
 ### Install dependencies
