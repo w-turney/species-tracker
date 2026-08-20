@@ -7,7 +7,7 @@ const FitRangeBounds = ({ rangeGeojson }) => {
     useEffect(() => {
         if (!rangeGeojson) return
         const bounds = L.geoJSON(rangeGeojson).getBounds()
-        if (bounds.isValid()) map.fitBounds(bounds, { padding: [20, 20] })
+        if (bounds.isValid()) map.fitBounds(bounds, { padding: [20, 20], maxZoom: 8 })
     }, [rangeGeojson, map])
     return null
 }

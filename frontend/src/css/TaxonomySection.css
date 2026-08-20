@@ -1,13 +1,49 @@
+.taxonomy-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 0;
+}
+
+.taxonomy-item dt {
+    color: var(--bs-secondary-color);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
 .tax-value {
     font-size: 1.2rem;
     font-weight: bold;
     margin-top: 0.5rem;
-    word-break: break-word;
+    overflow-wrap: normal;
+    hyphens: auto;
     padding: 0.5rem;
-    background-color: #f9f9f9;
-    border-radius: 0.5rem;
-    height: 80px;
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    background-color: var(--bs-tertiary-bg);
+    min-height: 5rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
+}
+
+@media (max-width: 991.98px) {
+    .taxonomy-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 575.98px) {
+    .taxonomy-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tax-value {
+        min-height: auto;
+        justify-content: flex-start;
+        text-align: left;
+    }
 }

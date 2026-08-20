@@ -2,6 +2,40 @@ import striptags from "striptags"
 import { kindOf, normaliseYN } from "./strings.js"
 import { getParts, getInfo, vernacularName } from "./iucn.js"
 
+const namedEntities = {
+    amp: '&',
+    apos: "'",
+    gt: '>',
+    lt: '<',
+    nbsp: ' ',
+    quot: '"',
+}
+
+const decodeHtmlEntities = (value) => String(value)
+    .replace(/&#x([\da-f]+);?/gi, (match, hex) => {
+        const codePoint = Number.parseInt(hex, 16)
+        return Number.isInteger(codePoint) && codePoint <= 0x10FFFF ? String.fromCodePoint(codePoint) : match
+    })
+    .replace(/&#(\d+);?/g, (match, decimal) => {
+        const codePoint = Number.parseInt(decimal, 10)
+        return Number.isInteger(codePoint) && codePoint <= 0x10FFFF ? String.fromCodePoint(codePoint) : match
+    })
+    .replace(/&([a-z]+);/gi, (match, name) => namedEntities[name.toLowerCase()] ?? match)
+
+const normaliseDocumentation = (value) => {
+    const withParagraphBreaks = decodeHtmlEntities(value ?? '')
+        .replace(/<\/(?:p|div|li|h[1-6])\s*>/gi, '\n\n')
+        .replace(/<br\s*\/?\s*>/gi, '\n')
+
+    return striptags(withParagraphBreaks, [], ' ')
+        .replace(/\u00a0/g, ' ')
+        .replace(/[ \t]+\n/g, '\n')
+        .replace(/\n[ \t]+/g, '\n')
+        .replace(/\n{3,}/g, '\n\n')
+        .replace(/[ \t]{2,}/g, ' ')
+        .trim()
+}
+
 function threatsFrom(iucnAssessmentData = {}) {
      const threats = Array.isArray(iucnAssessmentData?.threats) ? iucnAssessmentData.threats : []
      const seenCodes = new Set()
@@ -26,7 +60,7 @@ function threatsFrom(iucnAssessmentData = {}) {
      }).filter(Boolean)
     return {
         rows,
-        read_more: striptags(iucnAssessmentData?.documentation?.threats || '')
+        read_more: normaliseDocumentation(iucnAssessmentData?.documentation?.threats)
     }
 }
 
@@ -39,11 +73,11 @@ function conservationFrom(iucnAssessmentData = {}) {
         }))
     return {
         conservationActionsInPlace,
-        read_more: striptags(iucnAssessmentData?.documentation?.measures || '')
+        read_more: normaliseDocumentation(iucnAssessmentData?.documentation?.measures)
     }
 }
 
-export const buildSpeciesObject = (assessment = {}, mapData = {}, wikiData = {}, projects = []) => {
+export const buildSpeciesObject = (assessment = {}, mapData = null, wikiData = {}, projects = []) => {
     const taxon = assessment.taxon ?? {}
     const status = assessment.red_list_category?.description?.en ?? ''
     const assessment_date = assessment.assessment_date?.split('T')[0] ?? ''
@@ -69,7 +103,7 @@ export const buildSpeciesObject = (assessment = {}, mapData = {}, wikiData = {},
         },
         geographic_range: {
             map_data: mapData,
-            read_more: striptags(assessment.documentation?.range || '')
+            read_more: normaliseDocumentation(assessment.documentation?.range)
         },
         population: {
             status,
@@ -79,13 +113,13 @@ export const buildSpeciesObject = (assessment = {}, mapData = {}, wikiData = {},
             trend: assessment.population_trend?.description?.en || '',
             continuing_decline: assessment.supplementary_info?.population_continuing_decline || '—',
             severely_fragmented: assessment.supplementary_info?.population_severely_fragmented || '—',
-            read_more: striptags(assessment.documentation?.trend_justification || assessment?.documentation?.population || '')
+            read_more: normaliseDocumentation(assessment.documentation?.trend_justification || assessment?.documentation?.population)
         },
         habitat: {
             systems: Array.isArray(assessment.systems) ? [... new Set(assessment.systems.map(system => system?.description?.en).filter(Boolean))] : [],
             types: Array.isArray(assessment.habitats) ? [... new Set(assessment.habitats.map(habitatObj => (String(habitatObj?.description?.en) || '')).map(habitat => habitat.split(/\s-\s/)[0]).filter(Boolean))] : [],
             continuing_decline: normaliseYN(assessment.supplementary_info?.continuing_decline_in_area),            
-            read_more: striptags(assessment.documentation?.habitats || '')
+            read_more: normaliseDocumentation(assessment.documentation?.habitats)
         },
         threats: threatsFrom(assessment),
         conservation: conservationFrom(assessment),

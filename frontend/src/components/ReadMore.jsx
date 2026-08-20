@@ -1,17 +1,27 @@
-export function ReadMore( {open, onToggle, read_more} ) {
-    if (!read_more) return null
+import { longTextParagraphs } from '../utils/text'
+
+export function ReadMore({ open, onToggle, read_more, sectionId, sectionTitle }) {
+    const paragraphs = longTextParagraphs(read_more)
+    if (paragraphs.length === 0) return null
+
+    const contentId = `${sectionId}-detail`
+
     return (
-        <div className="row mt-3">
-            <div className="col-12 col-lg-8">
-                <button className="btn btn-sm btn-outline-secondary" type="button" aria-expanded={open} onClick={onToggle}>
-                    {open ? "Read Less" : "Read More"}
-                </button>
-                {open && (
-                    <div className="mt-2">
-                        <p className="mb-0">{read_more}</p>
-                    </div>
-                )}
-            </div>
+        <div className="mt-4 long-form-content">
+            <button
+                className="btn btn-sm btn-outline-secondary"
+                type="button"
+                aria-expanded={open}
+                aria-controls={contentId}
+                onClick={onToggle}
+            >
+                {open ? 'Read less' : 'Read more'}<span className="visually-hidden"> about {sectionTitle}</span>
+            </button>
+            {open && (
+                <div id={contentId} className="mt-3" tabIndex="-1">
+                    {paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+                </div>
+            )}
         </div>
     )
 }

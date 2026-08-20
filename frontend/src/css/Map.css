@@ -1,0 +1,22 @@
+.map-description {
+    max-width: var(--app-reading-max);
+    margin-bottom: 1rem;
+    color: var(--bs-secondary-color);
+}
+
+.map-region {
+    overflow: hidden;
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius-lg);
+}
+
+.species-range-map {
+    height: clamp(20rem, 55vw, 31rem);
+    width: 100%;
+}
+
+.map-unavailable {
+    display: grid;
+    min-height: 12rem;
+    align-content: center;
+}

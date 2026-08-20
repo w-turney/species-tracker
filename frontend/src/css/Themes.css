@@ -1,0 +1,223 @@
+/*
+ * Field Journal visual system
+ * Warm, editorial treatments for conservation data without changing the
+ * application's underlying information hierarchy or behaviour.
+ */
+
+:root {
+    color-scheme: light;
+    --bs-body-font-family: "Aptos", "Segoe UI", sans-serif;
+    --bs-body-color: #26342d;
+    --bs-body-color-rgb: 38, 52, 45;
+    --bs-body-bg: #f5f1e7;
+    --bs-body-bg-rgb: 245, 241, 231;
+    --bs-primary: #456349;
+    --bs-primary-rgb: 69, 99, 73;
+    --bs-secondary-color: #667068;
+    --bs-border-color: #c9c0ad;
+    --bs-tertiary-bg: #e9e2d2;
+    --bs-link-color: #365b42;
+    --bs-link-hover-color: #203e2b;
+    --bs-danger-rgb: 151, 55, 42;
+    --bs-success-rgb: 67, 106, 74;
+    --bs-warning-rgb: 176, 123, 46;
+    --bs-info-rgb: 67, 112, 119;
+    --bs-dark-rgb: 38, 52, 45;
+    --bs-border-radius: 2px;
+    --bs-border-radius-sm: 2px;
+    --bs-border-radius-lg: 2px;
+    --app-content-max: 72rem;
+    --app-reading-max: 54rem;
+    --app-section-space: clamp(2.5rem, 5vw, 4rem);
+    --field-journal-background: #f5f1e7;
+    --field-journal-panel: #fbf8f0;
+    --field-journal-soft: #ebe4d5;
+    --field-journal-ink: #26342d;
+    --field-journal-heading: #203028;
+    --field-journal-border: #c9c0ad;
+    --field-journal-border-strong: #9f9787;
+    --field-journal-accent: #456349;
+    --field-journal-focus: rgba(69, 99, 73, 0.22);
+}
+
+body {
+    background: var(--field-journal-background);
+    color: var(--field-journal-ink);
+    font-family: var(--bs-body-font-family);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--field-journal-heading);
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+a {
+    color: var(--bs-link-color);
+}
+
+a:hover {
+    color: var(--bs-link-hover-color);
+}
+
+.species-back-link {
+    width: 100%;
+    max-width: none;
+    padding-inline: max(
+        var(--app-gutter),
+        calc((100vw - var(--app-content-max)) / 2 + var(--app-gutter))
+    );
+}
+
+.btn {
+    border-radius: 2px;
+    font-weight: 650;
+}
+
+.btn-primary {
+    --bs-btn-color: #fffdf6;
+    --bs-btn-bg: var(--field-journal-accent);
+    --bs-btn-border-color: var(--field-journal-accent);
+    --bs-btn-hover-color: #fffdf6;
+    --bs-btn-hover-bg: #324f38;
+    --bs-btn-hover-border-color: #324f38;
+    --bs-btn-disabled-color: #fffdf6;
+    --bs-btn-disabled-bg: var(--field-journal-accent);
+    --bs-btn-disabled-border-color: var(--field-journal-accent);
+}
+
+.btn-outline-secondary {
+    --bs-btn-color: var(--bs-link-color);
+    --bs-btn-border-color: var(--field-journal-border-strong);
+    --bs-btn-hover-color: #fffdf6;
+    --bs-btn-hover-bg: var(--field-journal-accent);
+    --bs-btn-hover-border-color: var(--field-journal-accent);
+}
+
+.form-control {
+    border-color: var(--field-journal-border-strong);
+    border-radius: 2px;
+    background: var(--field-journal-panel);
+    color: var(--field-journal-ink);
+}
+
+.form-control:focus {
+    border-color: var(--field-journal-accent);
+    box-shadow: 0 0 0 0.2rem var(--field-journal-focus);
+}
+
+.card,
+.result-card,
+.empty-state {
+    border-color: var(--field-journal-border);
+    border-radius: 2px;
+    background: var(--field-journal-panel);
+    box-shadow: none;
+}
+
+.badge {
+    border-radius: 999px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+.map-region {
+    border-color: var(--field-journal-border-strong);
+    border-radius: 0;
+    background: var(--field-journal-panel);
+    box-shadow: none;
+}
+
+.leaflet-bar a {
+    border-color: var(--field-journal-border);
+    background: var(--field-journal-panel);
+    color: var(--field-journal-ink);
+}
+
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-color: var(--field-journal-ink);
+    --bs-table-border-color: var(--field-journal-border);
+}
+
+.species-section > .section-content > .border {
+    border-color: var(--field-journal-border) !important;
+    background: var(--field-journal-panel);
+}
+
+.search-hero,
+.species-back-link,
+.species-hero {
+    background: var(--field-journal-soft);
+}
+
+.search-hero h1,
+.species-hero h1 {
+    letter-spacing: -0.035em;
+}
+
+.species-hero-image {
+    height: 24rem;
+    min-height: 0;
+    max-height: none;
+    border: 0.4rem solid #faf6ed;
+    border-radius: 0;
+    box-shadow: 0 0 0 1px var(--field-journal-border);
+}
+
+.sticky-navbar {
+    border-color: #263c31;
+    background: #2d4437;
+    box-shadow: none;
+}
+
+.sticky-navbar .nav-link {
+    color: #eee8d8;
+}
+
+.sticky-navbar .nav-link:hover,
+.sticky-navbar .nav-link[aria-current='location'] {
+    color: #fffdf7;
+    text-decoration-color: #c89b57;
+}
+
+.species-section:nth-of-type(even) {
+    background: #efe9dc;
+}
+
+.section-heading {
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--field-journal-border);
+    font-size: clamp(1.8rem, 3vw, 2.35rem);
+    font-weight: 500;
+}
+
+.taxonomy-grid {
+    gap: 1.5rem;
+}
+
+.tax-value {
+    min-height: 3.75rem;
+    padding-inline: 0;
+    border: 0;
+    border-bottom: 1px solid var(--field-journal-border);
+    border-radius: 0;
+    background: transparent;
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.result-card {
+    border-width: 0 0 1px;
+    background: transparent;
+}
+
+@media (max-width: 575.98px) {
+    .species-hero-image {
+        height: 19rem;
+    }
+}

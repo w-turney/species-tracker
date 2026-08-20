@@ -1,41 +1,30 @@
-# React Species Tracker
+# Species Tracker
 
 ## Overview
 
-A full‑stack web application for exploring species conservation status, distribution ranges, and ecological information using IUCN Red List data and geospatial range datasets.
+A full-stack application for exploring species conservation assessments, distribution ranges, and related ecological information. It combines external biodiversity data with locally queried geospatial ranges and cached species records.
 
 ---
 
-## Links / screenshots
+## Screenshots
 
-- Repository: [GitHub repo](https://github.com/w-turney/species-tracker)
-
-### Search page
+### Home page
 ![Search page](./screenshots/search-page.png)
 
-### Species page - header
-![Species page header](./screenshots/species-page-header.png)
-
-### Species page - range
-![Species page range](./screenshots/species-page-range.png)
-
-### Species page - threats
-![Species page threats](./screenshots/species-page-threats.png)
-
-### Species page - conservation
-![Species page conservation](./screenshots/species-page-conservation.png)
+### Species page
+![Species page](./screenshots/species-page.png)
 
 ---
 
 ## Features
 
-- Search for species by common name
-- View the latest available IUCN Red List conservation assessment
-- Interactive Leaflet map showing species distribution ranges where available
-- PostGIS range data queries
-- MongoDB caching layer to reduce repeated external API requests
-- Defensive backend handling for missing, incomplete, or inconsistent external API data
-- Responsive frontend built with React and Bootstrap
+- English common-name search with ranked, paginated results (24 results per page)
+- Dedicated species pages with conservation status, assessment metadata, taxonomy, population, habitat, threats, and conservation actions
+- Interactive Leaflet range map backed by PostGIS GeoJSON queries where local range data is available
+- Related GlobalGiving conservation projects where matching project data is available
+- Deliberate loading, error, empty, and unavailable-data states for incomplete external data
+- Responsive, accessible React interface with keyboard-operable search, pagination, section navigation, and expandable content
+- MongoDB caching of species-page responses for up to 30 days to reduce repeat external requests
 
 ---
 
@@ -45,6 +34,7 @@ A full‑stack web application for exploring species conservation status, distri
 - React (Vite)
 - Leaflet / React Leaflet
 - Bootstrap
+- React Router
 
 ### Backend
 - Node.js / Express
@@ -58,6 +48,7 @@ A full‑stack web application for exploring species conservation status, distri
 ### External APIs
 - IUCN Red List API
 - Global Biodiversity Information Facility (GBIF) API
+- Wikipedia REST API
 - GlobalGiving API
 - OpenStreetMap tiles
 
@@ -80,28 +71,37 @@ The project gave me the opportunity to practise:
 ## How it works
 
 ### Species search
-- Users search for a species by common name
-- The backend queries the GBIF API with the common name to return scientific names
-- Search results link the user to a dedicated species page
+- Users search by English common name.
+- The backend queries GBIF for accepted species, ranks matching vernacular names, and returns a 24-result page plus the total number of matches.
+- The frontend provides Previous and Next controls when additional result pages are available, then links each result to its species page.
 
 ### Displaying species conservation data
 The species page combines data from several sources:
 
-- IUCN Red List data for conservation status and assessment information
+- IUCN Red List data for the latest assessment and structured conservation information
+- Wikipedia summaries when available
 - PostGIS range data for species distribution maps
 - GlobalGiving data for related conservation projects
 
-The backend prepares and formats this data before returning it to the frontend
+The backend normalises the available data before returning it to the frontend, which presents clear fallbacks when optional fields, projects, images, or range data are unavailable.
 
 ### Caching
-- Species page data is cached in MongoDB to reduce repeated external API requests and improve performance for previously viewed species
+- Species-page data is cached in MongoDB for 30 days to reduce repeated external API requests and improve repeat-view performance
+
+---
+
+## Architecture
+
+React frontend → Express API → GBIF, IUCN, Wikipedia and GlobalGiving APIs
+
+React frontend → Express API → PostGIS range database and MongoDB cache
 
 ---
 
 ## API routes
 
-- `GET /api/search` — search for species by common name
-- `GET /api/species/:scientificName` — returns species page data
+- `GET /api/search?q=<common-name>&page=<number>` — searches accepted GBIF species by English common name. `q` is required; `page` is optional and defaults to 1. The response includes a 24-result page, total count, page metadata, and `hasMore`.
+- `GET /api/species/:scientificName` — returns the assembled species-page data, using the MongoDB cache when available
 
 ---
 
@@ -124,7 +124,6 @@ The backend prepares and formats this data before returning it to the frontend
 
 - Add support for fish range data
 - Improve the conservation project matching logic so suggested projects are more species-relevant
-- Refine CSS / Bootstrap styling
 
 ---
 
@@ -137,7 +136,7 @@ The backend prepares and formats this data before returning it to the frontend
 - MongoDB
 - IUCN API token  
 - GlobalGiving API token
-- GDAL / ogr2ogr (e.g., via OSGeo4W on Windows)  
+- GDAL / ogr2ogr (only needed to import or update local range shapefiles; e.g. via OSGeo4W on Windows)
 
 
 ### Environment Variables
@@ -145,6 +144,7 @@ The backend prepares and formats this data before returning it to the frontend
 Create a `.env` file inside the `backend` directory:
 
 ```env
+# Optional; defaults to 5000 when omitted
 PORT=5000
 IUCN_TOKEN=<YOUR_IUCN_API_TOKEN>
 GLOBALGIVING_TOKEN=<YOUR_GLOBALGIVING_API_TOKEN>
@@ -157,7 +157,7 @@ MONGO_URI=mongodb+srv://<USERNAME>:<PASSWORD>@<CLUSTER>.mongodb.net/species-trac
 ### Clone the repository
 
 ```bash
-git clone https://github.com/w-turney/species-tracker
+git clone https://github.com/w-turney/species-tracker.git
 cd species-tracker
 ```
 
@@ -176,6 +176,8 @@ npm install
 ```
 
 ### PostGIS database setup
+
+The application looks for a range table based on the IUCN class: `mammals`, `birds`, `reptiles`, or `amphibians`. Import the tables needed for the coverage you want to provide.
 
 Inside your PostgreSQL database:
 ```sql
@@ -223,7 +225,7 @@ ogr2ogr -progress -f "PostgreSQL" \
 
 #### Refining Tables (filter, dissolve, validate)
 
-This example creates a simplified `mammals` table from `mammals_raw` by:
+This example creates the `mammals` table used by the application from `mammals_raw` by:
 
 - Filtering to extant ranges  
 - Dissolving geometries by `id_no`  
@@ -286,6 +288,8 @@ cd frontend
 npm run dev
 ```
 
+Vite proxies `/api` requests to the backend at `http://localhost:5000` during local development.
+
 ---
 
 ## Credits / data sources
@@ -293,5 +297,6 @@ npm run dev
 - IUCN Red List API
 - IUCN / BirdLife species range shapefiles
 - GBIF API
+- Wikipedia REST API
 - GlobalGiving API
 - OpenStreetMap

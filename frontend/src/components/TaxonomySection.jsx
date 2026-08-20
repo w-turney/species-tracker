@@ -1,56 +1,31 @@
 import '../css/TaxonomySection.css'
+import { displayValue } from '../utils/text'
 
-export function TaxonomySection( {taxonomy} ) {
+const taxonomyFields = [
+    ['Kingdom', 'kingdom_name'],
+    ['Phylum', 'phylum_name'],
+    ['Class', 'class_name'],
+    ['Order', 'order_name'],
+    ['Family', 'family_name'],
+    ['Genus', 'genus_name'],
+    ['Species', 'species_name'],
+]
+
+export function TaxonomySection({ taxonomy = {} }) {
     return (
-        <section id="taxonomy">
-            <h2 className="mb-4">Taxonomy</h2>
-            <div className="container-fluid px-4">
-                <div className="row text-center justify-content-center mb-3">
-                    <div className="col-6 col-md-3">
-                        <small className="text-uppercase">Kingdom</small>
-                        <div className="tax-value">
-                            {taxonomy.kingdom_name}
+        <section id="taxonomy" className="species-section" aria-labelledby="taxonomy-title">
+            <div className="section-content">
+                <h2 id="taxonomy-title" className="section-heading">Taxonomy</h2>
+                <dl className="taxonomy-grid">
+                    {taxonomyFields.map(([label, key]) => (
+                        <div className="taxonomy-item" key={key}>
+                            <dt>{label}</dt>
+                            <dd className="tax-value">
+                                {key === 'species_name' ? <em>{displayValue(taxonomy[key])}</em> : displayValue(taxonomy[key])}
+                            </dd>
                         </div>
-                    </div>
-                    <div className="col-6 col-md-3">
-                        <small className="text-uppercase">Phylum</small>
-                        <div className="tax-value">
-                            {taxonomy.phylum_name}
-                        </div>
-                    </div>
-                    <div className="col-6 col-md-3">
-                        <small className="text-uppercase">Class</small>
-                        <div className="tax-value">
-                            {taxonomy.class_name}
-                        </div>
-                    </div>
-                    <div className="col-6 col-md-3">
-                        <small className="text-uppercase">Order</small>
-                        <div className="tax-value">
-                            {taxonomy.order_name}
-                        </div>
-                    </div>
-                </div>
-                <div className="row text-center justify-content-center">
-                    <div className="col-6 col-md-3">
-                        <small className="text-uppercase">Family</small>
-                        <div className="tax-value">
-                            {taxonomy.family_name}
-                        </div>
-                    </div>
-                    <div className="col-6 col-md-3">
-                        <small className="text-uppercase">Genus</small>
-                        <div className="tax-value">
-                            {taxonomy.genus_name}
-                        </div>
-                    </div>
-                    <div className="col-6 col-md-3">
-                        <small className="text-uppercase">Species</small>
-                        <div className="tax-value"><em>
-                            {taxonomy.species_name}
-                        </em></div>
-                    </div>
-                </div>
+                    ))}
+                </dl>
             </div>
         </section>
     )
