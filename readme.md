@@ -23,7 +23,7 @@ A full-stack application for exploring species conservation assessments, distrib
 - Interactive Leaflet range map backed by PostGIS GeoJSON queries where local range data is available
 - Related GlobalGiving conservation projects where matching project data is available
 - Deliberate loading, error, empty, and unavailable-data states for incomplete external data
-- Responsive, accessible React interface with keyboard-operable search, pagination, section navigation, and expandable content
+- Responsive, accessibility-conscious React interface with keyboard-operable search, pagination, section navigation, and expandable content
 - MongoDB caching of species-page responses for up to 30 days to reduce repeat external requests
 
 ---
@@ -79,7 +79,7 @@ The project gave me the opportunity to practise:
 The species page combines data from several sources:
 
 - IUCN Red List data for the latest assessment and structured conservation information
-- Wikipedia summaries when available
+- Wikipedia species images when available
 - PostGIS range data for species distribution maps
 - GlobalGiving data for related conservation projects
 
@@ -116,7 +116,7 @@ React frontend → Express API → PostGIS range database and MongoDB cache
   The external API responses were not always complete or consistent. I added defensive backend logic to handle missing fields, unexpected formats, unavailable assessments, and species with no local range data. This allowed the frontend to render useful fallback states instead of crashing.
 
 - **Performance and data size**
-  Range geometries can be large, so I used PostGIS indexes and refined range tables to make spatial lookups more efficient. I also added MongoDB caching to reduce repeated external API calls for species that had already been requested.
+  Range geometries can be large, so I created simplified geometries for the application to reduce the amount of geospatial data returned and rendered on the map. I also added MongoDB caching to reduce repeated external API calls for species that had already been requested.
 
 ---
 
