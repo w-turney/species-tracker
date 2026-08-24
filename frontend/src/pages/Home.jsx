@@ -20,7 +20,7 @@ export function Home() {
     const [loading, setLoading] = useState(false)
     const [retryCount, setRetryCount] = useState(0)
     const resultsHeadingRef = useRef(null)
-    const lastLoadedPageRef = useRef(requestedPage)
+    const shouldFocusResultsRef = useRef(false)
 
     const activePage = resultMeta.page || requestedPage
     const totalPages = resultMeta.pageSize > 0 ? Math.ceil(resultMeta.totalResults / resultMeta.pageSize) : 0
@@ -91,15 +91,14 @@ export function Home() {
     }, [submittedQuery, requestedPage, retryCount])
 
     useEffect(() => {
-        if (!loading && loadedPage !== null && Array.isArray(results) && results.length > 0) {
-            if (lastLoadedPageRef.current !== loadedPage) {
-                resultsHeadingRef.current?.focus()
-            }
-            lastLoadedPageRef.current = loadedPage
+        if (!loading && loadedPage !== null && Array.isArray(results) && shouldFocusResultsRef.current) {
+            resultsHeadingRef.current?.focus()
+            shouldFocusResultsRef.current = false
         }
     }, [loadedPage, loading, results])
 
     const setSearchPage = (query, page) => {
+        shouldFocusResultsRef.current = true
         const nextParams = { q: query }
         if (page > 1) nextParams.page = String(page)
         setSearchParams(nextParams)
@@ -116,6 +115,7 @@ export function Home() {
         }
 
         if (query === submittedQuery) {
+            shouldFocusResultsRef.current = true
             setRetryCount((count) => count + 1)
             return
         }
@@ -123,7 +123,10 @@ export function Home() {
         setSearchPage(query, 1)
     }
 
-    const retrySearch = () => setRetryCount((count) => count + 1)
+    const retrySearch = () => {
+        shouldFocusResultsRef.current = true
+        setRetryCount((count) => count + 1)
+    }
     const goToPage = (page) => {
         if (loading || page < 1 || page > totalPages || page === activePage) return
         setSearchPage(submittedQuery, page)
@@ -158,7 +161,7 @@ export function Home() {
                 </div>
             </section>
 
-            <section className="search-results" aria-label="Search results">
+            <section className="search-results" aria-label="Search results" aria-busy={loading}>
                 <div className="home-content">
                     {loading && (
                         <div className="state-message" role="status" aria-live="polite">
@@ -178,7 +181,7 @@ export function Home() {
 
                     {!loading && !error && Array.isArray(results) && results.length === 0 && (
                         <div className="empty-state" role="status" aria-live="polite">
-                            <h2 id="search-results-heading" className="h4">No matching species found</h2>
+                            <h2 id="search-results-heading" className="h4" ref={resultsHeadingRef} tabIndex="-1">No matching species found</h2>
                             <p className="mb-0">Try a different English common name, or make the search more specific.</p>
                         </div>
                     )}
@@ -187,7 +190,7 @@ export function Home() {
                         <>
                             <div className="search-results-heading">
                                 <h2 id="search-results-heading" ref={resultsHeadingRef} tabIndex="-1">Search results</h2>
-                                <p className="text-secondary mb-0">
+                                <p className="text-secondary mb-0" role="status" aria-live="polite" aria-atomic="true">
                                     Showing {firstResult}–{lastResult} of {resultMeta.totalResults} result{resultMeta.totalResults === 1 ? '' : 's'} for “{submittedQuery}”.
                                 </p>
                             </div>
